@@ -1,13 +1,13 @@
 type Position = { lat: number; lng: number };
 
-// Same coordinates as in Map.tsx
+// Route coordinates in [lat, lng] format
 const routeCoordinates: [number, number][] = [
-  [-74.0060, 40.7128],
-  [-74.0070, 40.7138],
-  [-74.0080, 40.7148],
-  [-74.0090, 40.7158],
-  [-74.0100, 40.7168],
-  [-74.0110, 40.7178],
+  [40.7128, -74.0060],
+  [40.7138, -74.0070],
+  [40.7148, -74.0080],
+  [40.7158, -74.0090],
+  [40.7168, -74.0100],
+  [40.7178, -74.0110],
 ];
 
 class MockSocket {
@@ -29,7 +29,7 @@ class MockSocket {
     this.interval = setInterval(() => {
       // Follow the route
       const coord = routeCoordinates[this.currentStep];
-      const pos = { lng: coord[0], lat: coord[1] };
+      const pos = { lat: coord[0], lng: coord[1] };
       
       this.listeners.forEach(cb => cb(pos));
       
