@@ -1,5 +1,7 @@
 'use client';
 
+import dynamic from 'next/dynamic';
+const BusMap = dynamic(() => import('@/components/Map'), { ssr: false });
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { motion } from 'framer-motion';
 import { Bus, Users, MapPin, AlertCircle, TrendingUp, ShieldCheck } from 'lucide-react';
@@ -37,8 +39,32 @@ export default function AdminDashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Map View */}
+          <div className="lg:col-span-2 h-[500px]">
+             <BusMap />
+          </div>
+
+          {/* System Health */}
+          <div className="glass rounded-3xl p-8">
+            <h3 className="text-xl font-bold mb-8">System Health</h3>
+            <div className="space-y-8">
+              <HealthItem label="GPS Servers" status="healthy" percentage={99.9} />
+              <HealthItem label="API Latency" status="healthy" percentage={94} />
+              <HealthItem label="Database" status="healthy" percentage={100} />
+              <div className="pt-4">
+                <div className="bg-primary/10 border border-primary/20 p-4 rounded-2xl flex items-center gap-4">
+                  <TrendingUp className="text-primary" />
+                  <div>
+                    <p className="text-sm font-bold">Optimization Active</p>
+                    <p className="text-xs text-slate-400">Routes are being auto-adjusted for traffic.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Fleet Status Table */}
-          <div className="lg:col-span-2 glass rounded-3xl p-8">
+          <div className="lg:col-span-3 glass rounded-3xl p-8">
             <h3 className="text-xl font-bold mb-8">Fleet Status</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
@@ -60,30 +86,12 @@ export default function AdminDashboard() {
               </table>
             </div>
           </div>
-
-          {/* System Health */}
-          <div className="glass rounded-3xl p-8">
-            <h3 className="text-xl font-bold mb-8">System Health</h3>
-            <div className="space-y-8">
-              <HealthItem label="GPS Servers" status="healthy" percentage={99.9} />
-              <HealthItem label="API Latency" status="healthy" percentage={94} />
-              <HealthItem label="Database" status="healthy" percentage={100} />
-              <div className="pt-4">
-                <div className="bg-primary/10 border border-primary/20 p-4 rounded-2xl flex items-center gap-4">
-                  <TrendingUp className="text-primary" />
-                  <div>
-                    <p className="text-sm font-bold">Optimization Active</p>
-                    <p className="text-xs text-slate-400">Routes are being auto-adjusted for traffic.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </DashboardLayout>
   );
 }
+
 
 function StatCard({ icon, label, value, trend }: { icon: React.ReactNode, label: string, value: string, trend: string }) {
   return (

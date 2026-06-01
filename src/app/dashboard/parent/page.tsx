@@ -1,6 +1,7 @@
 'use client';
 
-import BusMap from '@/components/Map';
+import dynamic from 'next/dynamic';
+const BusMap = dynamic(() => import('@/components/Map'), { ssr: false });
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { motion } from 'framer-motion';
 import { Bus, MapPin, Clock, ShieldCheck, AlertTriangle } from 'lucide-react';

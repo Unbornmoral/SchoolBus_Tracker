@@ -1,8 +1,18 @@
 type Position = { lat: number; lng: number };
 
+// Same coordinates as in Map.tsx
+const routeCoordinates: [number, number][] = [
+  [-74.0060, 40.7128],
+  [-74.0070, 40.7138],
+  [-74.0080, 40.7148],
+  [-74.0090, 40.7158],
+  [-74.0100, 40.7168],
+  [-74.0110, 40.7178],
+];
+
 class MockSocket {
   private listeners: ((pos: Position) => void)[] = [];
-  private currentPos: Position = { lat: 40.7128, lng: -74.0060 }; // Start in NYC
+  private currentStep = 0;
   private interval: NodeJS.Timeout | null = null;
 
   connect() {
@@ -14,18 +24,24 @@ class MockSocket {
   }
 
   private startStreaming() {
+    if (this.interval) return;
+    
     this.interval = setInterval(() => {
-      // Simulate movement
-      this.currentPos = {
-        lat: this.currentPos.lat + (Math.random() - 0.5) * 0.001,
-        lng: this.currentPos.lng + (Math.random() - 0.5) * 0.001
-      };
-      this.listeners.forEach(cb => cb(this.currentPos));
-    }, 2000);
+      // Follow the route
+      const coord = routeCoordinates[this.currentStep];
+      const pos = { lng: coord[0], lat: coord[1] };
+      
+      this.listeners.forEach(cb => cb(pos));
+      
+      this.currentStep = (this.currentStep + 1) % routeCoordinates.length;
+    }, 3000);
   }
 
   disconnect() {
-    if (this.interval) clearInterval(this.interval);
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
     this.listeners = [];
   }
 }
